@@ -10,18 +10,25 @@ public class Solver {
     Solver() throws IOException{
         loadDictionary();
     }
-    public List<String> solve(String[][] board){
+    public List<String> solve(String[][] board) throws Exception {
         this.board = board;
         size = board[0].length;
         List<String> solution = new ArrayList<>();
         for(int i=0;i<size;i++){
+            for(int j=0;j<size;j++){
+                if (Objects.equals(board[i][j], "")){
+                    throw new Exception("Cell ("+i+", "+j+") is blank!");
+                }
+            }
+        }
+        for(int i=0;i<size;i++){
             for(int j=0;j<size;j++) {
+                String initial = board[i][j];
                 List<String> possible = new ArrayList<>();
                 List<String> words = new ArrayList<>();
                 List<Pair<Integer>> visited = new ArrayList<>();
                 possible.addAll(dictionary);
                 possible.removeAll(solution);
-                String initial = board[i][j];
                 solution.addAll(findWords(words, possible, visited, initial, new Pair<>(i, j)));
             }
         }

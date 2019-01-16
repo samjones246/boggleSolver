@@ -1,24 +1,23 @@
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.List;
 
-public class Main extends JDialog{
+public class Main extends JFrame{
     LettersPanel lettersPanel;
     JButton solveButton;
     JButton resetButton;
     Solver solver;
     Main(String title){
-        super(new JFrame(), title);
+        super(title);
         initialise();
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent evt) {
-                System.exit(0);
-            }
-        });
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         pack();
+        setResizable(false);
         setVisible(true);
     }
     public void initialise(){
@@ -41,6 +40,15 @@ public class Main extends JDialog{
         buttonPanel.add(solveButton);
         buttonPanel.add(resetButton);
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+        JPanel sizePanel = new JPanel(new GridLayout(1 ,2));
+        sizePanel.add(new JLabel("Grid Size: "));
+        JSpinner sizeSpinner = new JSpinner(new SpinnerNumberModel(4, 2, 10, 1));
+        sizeSpinner.addChangeListener(e -> {
+            lettersPanel.changeSize((Integer) sizeSpinner.getValue());
+            pack();
+        });
+        sizePanel.add(sizeSpinner);
+        mainPanel.add(sizePanel, BorderLayout.NORTH);
         setContentPane(mainPanel);
         try {
             solver = new Solver();
@@ -58,8 +66,13 @@ public class Main extends JDialog{
     }
 
     public void solve(){
-        List<String> solution = solver.solve(lettersPanel.getLetters());
-        new ResultsWindow(solution);
+        List<String> solution;
+        try {
+            solution = solver.solve(lettersPanel.getLetters());
+            new ResultsWindow(solution);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
 }

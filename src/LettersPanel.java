@@ -20,14 +20,14 @@ public class LettersPanel extends JPanel {
     }
     void initialise(){
         removeAll();
-        Font font = new Font("Helvetica", Font.BOLD, 48);
+        Font font = new Font("Helvetica", Font.BOLD, 60);
         board = new JTextField[size][size];
         setLayout(new GridLayout(size,size));
         for(int i=0;i<size;i++){
             for(int j=0;j<size;j++){
                 JTextField letter = new JTextField();
                 letter.setDocument(new LetterDoc(letter));
-                letter.setPreferredSize(new Dimension(50, 50));
+                letter.setPreferredSize(new Dimension(75, 75));
                 letter.setFont(font);
                 letter.setForeground(Color.black);
                 letter.setHorizontalAlignment(SwingConstants.CENTER);
