@@ -21,7 +21,7 @@ public class Main extends JFrame{
         setVisible(true);
     }
     public void initialise(){
-        Color sapphire = new Color(0x0f52ba);
+        Color highlightColor = new Color(0x881CBA);
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         lettersPanel = new LettersPanel(4);
@@ -29,12 +29,12 @@ public class Main extends JFrame{
         solveButton = new JButton();
         solveButton.setText("SOLVE");
         solveButton.addActionListener(e -> solve());
-        solveButton.setBackground(sapphire);
+        solveButton.setBackground(highlightColor);
         solveButton.setForeground(Color.white);
         resetButton = new JButton();
         resetButton.setText("RESET");
         resetButton.addActionListener(e -> reset());
-        resetButton.setBackground(sapphire);
+        resetButton.setBackground(highlightColor);
         resetButton.setForeground(Color.white);
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
         buttonPanel.add(solveButton);
