@@ -6,9 +6,9 @@ import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 import java.util.List;
 
 public class LettersPanel extends JPanel {
@@ -20,25 +20,22 @@ public class LettersPanel extends JPanel {
     }
     void initialise(){
         removeAll();
-        Font font = new Font("Helvetica", Font.BOLD, 60);
         board = new JTextField[size][size];
         setLayout(new GridLayout(size,size));
+        setPreferredSize(new Dimension(400, 400));
         for(int i=0;i<size;i++){
             for(int j=0;j<size;j++){
                 JTextField letter = new JTextField();
                 letter.setDocument(new LetterDoc(letter));
-                letter.setPreferredSize(new Dimension(75, 75));
-                letter.setFont(font);
                 letter.setForeground(Color.black);
+                letter.setFont(new Font("Helvetica", Font.BOLD, 350/size));
                 letter.setHorizontalAlignment(SwingConstants.CENTER);
                 letter.addFocusListener(new FocusAdapter() {
-                    @Override
                     public void focusGained(FocusEvent e) {
                         letter.setBackground(new Color(0x0f52ba));
                         letter.setForeground(Color.white);
                     }
 
-                    @Override
                     public void focusLost(FocusEvent e) {
                         letter.setBackground(Color.white);
                         letter.setForeground(Color.black);
@@ -46,16 +43,10 @@ public class LettersPanel extends JPanel {
                 });
                 letter.setCaret(new DefaultCaret() {
 
-                    @Override
-                    public void paint(Graphics g) {
-                    }
-
-                    @Override
                     public boolean isVisible() {
                         return false;
                     }
 
-                    @Override
                     public boolean isSelectionVisible() {
                         return false;
                     }
@@ -89,6 +80,45 @@ public class LettersPanel extends JPanel {
         size = newSize;
         initialise();
         repaint();
+    }
+    public int getFontSize(JTextField text, int columnsToHold){
+        //Create a sample test String (we will it later in our calculations)
+        String testString = "";
+        for(int i = 0; i<columnsToHold; i++){
+            testString = testString + "5";
+        }
+
+
+        //size will hold the optimal Vertical point size for the font
+        Boolean up = null;
+        int size = text.getHeight();
+        Font font;
+        while (true) {
+            font = new Font("Default", Font.PLAIN, size);
+            int testHeight = getFontMetrics(font).getHeight();
+            if (testHeight < text.getHeight() && up != Boolean.FALSE) {
+                size++;
+                up = Boolean.TRUE;
+            } else if (testHeight > text.getHeight() && up != Boolean.TRUE) {
+                size--;
+                up = Boolean.FALSE;
+            } else {
+                break;
+            }
+        }
+        //At this point, size holds the optimal Vertical font size
+
+        //Now we will calculate the width of the sample string
+        BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        FontMetrics fm = img.createGraphics().getFontMetrics();
+        int width = fm.stringWidth(testString);
+
+        //Using Martijn's answer, we calculate the optimal Horizontal font size
+        int newFontSize = size * text.getWidth()/width;
+
+        //The perfect font size will be the minimum between both optimal font sizes.
+        //I have subtracted 2 from each font so that it is not too tight to the edges
+        return Math.min(newFontSize-2, size-2);
     }
 }
 
